@@ -31,16 +31,16 @@
     <Parameter override="false" name="mqtt.InternalClientUsername" value="brokeruser" description="The username the internal Paho-client uses when connecting to the Moquette broker"/>
     <Parameter override="false" name="mqtt.InternalClientPassword" value="brokeruser" description="The password the internal Paho-client uses when connecting to the Moquette broker"/>
 
-    <!--
     <Environment name="MoquetteHttpAuthenticatorUri" value="http://localhost:8000/mqttauth/auth/" type="java.lang.String"/>
     <Environment name="MoquetteHttpAuthorizatorUri" value="http://localhost:8000/mqttauth/acl/" type="java.lang.String"/>
-    -->
     <!--
     Docker for Mac doesn't work with "localhost" when connecting to the host,
     need to use this instead:
     -->
+    <!--
     <Environment name="MoquetteHttpAuthenticatorUri" value="http://docker.for.mac.localhost:8000/mqttauth/auth/" type="java.lang.String"/>
     <Environment name="MoquetteHttpAuthorizatorUri" value="http://docker.for.mac.localhost:8000/mqttauth/acl/" type="java.lang.String"/>
+    -->
 
     <!-- persistence setting -->
     <!-- 1.2 -->
@@ -57,7 +57,7 @@
     <Parameter override="false" name="persistence.alwaysOrderbyId" value="false" description="Always add an 'orderby=id asc' to queries to ensure consistent paging."/>
     <!-- JNDO Database connection. Does suppport connection pooling. -->
     <Parameter override="false" name="persistence.db_jndi_datasource" value="jdbc/sensorThings" description="JNDI data source name"/>
-    <!--
+
     <Resource
         name="jdbc/sensorThings" auth="Container"
         type="javax.sql.DataSource" driverClassName="org.postgresql.Driver"
@@ -66,11 +66,11 @@
         maxTotal="20" maxIdle="10" maxWaitMillis="-1"
         defaultAutoCommit="false"
     />
-    -->
     <!--
     Docker for Mac doesn't work with "localhost" when connecting to the host,
     need to use this instead:
     -->
+    <!--
     <Resource
         name="jdbc/sensorThings" auth="Container"
         type="javax.sql.DataSource" driverClassName="org.postgresql.Driver"
@@ -79,4 +79,5 @@
         maxTotal="20" maxIdle="10" maxWaitMillis="-1"
         defaultAutoCommit="false"
     />
+    -->
 </Context>
