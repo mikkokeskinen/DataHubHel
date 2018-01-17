@@ -58,7 +58,7 @@ def acl(request):
     acc = request.POST.get('acc')  # 1 == sub, 2 == pub
 
     permission_name_map = {
-        '1':  'subscribe_datastream',
+        '1': 'subscribe_datastream',
         '2': 'publish_datastream',
     }
 
@@ -66,24 +66,32 @@ def acl(request):
     if not permission_name:
         return HttpResponse(status=response_status_code)
 
+    user_class = get_user_model()
+    try:
+        user_class.objects.get(username=username, is_active=True, is_superuser=True)
+
+        return HttpResponse(status=200)
+    except user_class.DoesNotExist:
+        pass
+
     # TODO: make prefix configurable
     parse_result = parse_sta_url(topic, prefix='v1.0')
 
-    # For now we only look for a Datastream id and check permissions for that datastream
-    for part in parse_result['parts']:
-        if part['type'] == 'entity' and part['name'] == 'Datastream' and part['id']:
-            try:
-                ds = Datastream.objects.get(sts_id=part['id'])
-
-                user_class = get_user_model()  # noqa
+    if parse_result['parts']:
+        # For now we only look for a Datastream id and check permissions for that datastream
+        for part in parse_result['parts']:
+            if part['type'] == 'entity' and part['name'] == 'Datastream' and part['id']:
                 try:
-                    user = user_class.objects.get(username=username, is_active=True)
+                    ds = Datastream.objects.get(sts_id=part['id'])
 
-                    if user.has_perm(permission_name, ds):
-                        response_status_code = 200
-                except user_class.DoesNotExist:
+                    try:
+                        user = user_class.objects.get(username=username, is_active=True)
+
+                        if user.has_perm(permission_name, ds):
+                            response_status_code = 200
+                    except user_class.DoesNotExist:
+                        pass
+                except Datastream.DoesNotExist:
                     pass
-            except Datastream.DoesNotExist:
-                pass
 
     return HttpResponse(status=response_status_code)
